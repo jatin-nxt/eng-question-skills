@@ -1,4 +1,5 @@
 ---
+
 name: mcq-question-generator
 description: >
   Generates text-based multiple-choice (MCQ) English assessment questions across all CEFR levels
@@ -10,24 +11,25 @@ description: >
   a text stimulus and selects the correct answer — even if the user doesn't say "MCQ" explicitly.
   This skill is for text-only MCQ. For audio-based MCQ, use the A2MCQ skill instead.
 ---
-
 # MCQ — Text-Based Multiple-Choice English Assessment Question Generator
 
 ## Output Format
 
 Produce a **JSON object** with exactly these keys:
 
-| Key | Description |
-|-----|-------------|
-| `instruction` | 1 sentence telling the learner what to do; HTML (`<b>term</b>`) permitted. |
-| `stem` | The full task content: source text (sentence, passage, dialogue, or paragraph with blanks) followed by the question. Use `<br><br>` to separate the source text from the question within the same field. HTML `<b>term</b>` for key vocabulary. |
-| `options` | List of exactly `num_options` answer strings (default 4 unless otherwise specified). |
-| `answer` | The single correct option — must appear verbatim in `options`. |
-| `explanation` | At least 2 lines (or ≥ 100 characters) explaining why the answer is correct and why each distractor is wrong. |
-| `cefr_level` | One of: A1, A2, B1, B2, C1, C2 |
-| `subtopic` | Brief topic label (e.g., "Vocabulary in context") |
+| Key           | Description                                                                                                                                                                                                                                     |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `instruction` | 1 sentence telling the learner what to do; HTML (`<b>term</b>`) permitted.                                                                                                                                                                      |
+| `stem`        | The full task content: source text (sentence, passage, dialogue, or paragraph with blanks) followed by the question. Use `<br><br>` to separate the source text from the question within the same field. HTML `<b>term</b>` for key vocabulary. |
+| `options`     | List of exactly `num_options` answer strings (default 4 unless otherwise specified).                                                                                                                                                            |
+| `answer`      | The single correct option — must appear verbatim in `options`.                                                                                                                                                                                  |
+| `explanation` | At least 2 lines (or ≥ 100 characters) explaining why the answer is correct and why each distractor is wrong.                                                                                                                                   |
+| `cefr_level`  | One of: A1, A2, B1, B2, C1, C2                                                                                                                                                                                                                  |
+| `subtopic`    | Brief topic label (e.g., "Vocabulary in context")                                                                                                                                                                                               |
+
 
 > ### JSON Validation & HTML Escaping Rules
+>
 > 1. **Strict Simple Tags Only**: Use only `<b>`, `<i>`, `<br>`. Do **NOT** use tags requiring attributes.
 > 2. **Double-Quote Escaping**: All nested double quotes inside string fields must be escaped as `\"`.
 > 3. **No Code Blocks**: Output *only* the raw JSON object — do not wrap in markdown code blocks.
@@ -40,37 +42,42 @@ Produce a **JSON object** with exactly these keys:
 
 ## Question Types
 
-| # | Type | Stimulus | Cognitive skill | CEFR range |
-|---|------|----------|-----------------|------------|
-| 1 | `sentence_inference` | Single sentence | Infer what the sentence suggests or implies | A2–B2 |
-| 2 | `factual_comprehension` | Single sentence or short statement | Identify the correct statement from the given information | A1–B1 |
-| 3 | `vocabulary_in_context` | Single sentence with a bolded key word | Identify the meaning of the word as used in the sentence | A2–C1 |
-| 4 | `passage_comprehension` | Short passage (3–8 sentences) | Answer a factual or inferential question about the passage | A2–C1 |
-| 5 | `conversation_completion` | Dialogue with one missing turn | Choose the most appropriate reply for the missing speaker | B1–C1 |
-| 6 | `text_completion` | Sentence or paragraph with one or two blanks | Choose the word, phrase, or connector pair that best fills the blank(s) | B1–C2 |
-| 7 | `grammar_application` | One or more sentences | Apply a grammar rule: identify which sentence can/cannot be transformed, or choose the correct transformation | B1–C1 |
-| 8 | `sentence_correction` | Sentence with a bolded portion | Choose the option that correctly improves the highlighted text | B2–C2 |
-| 9 | `matching` | A person's description or requirements | Choose the option that best matches those requirements | A2–B2 |
+
+| #   | Type                      | Stimulus                                     | Cognitive skill                                                                                               | CEFR range |
+| --- | ------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ---------- |
+| 1   | `sentence_inference`      | Single sentence                              | Infer what the sentence suggests or implies                                                                   | A2–B2      |
+| 2   | `factual_comprehension`   | Single sentence or short statement           | Identify the correct statement from the given information                                                     | A1–B1      |
+| 3   | `vocabulary_in_context`   | Single sentence with a bolded key word       | Identify the meaning of the word as used in the sentence                                                      | A2–C1      |
+| 4   | `passage_comprehension`   | Short passage (3–8 sentences)                | Answer a factual or inferential question about the passage                                                    | A2–C1      |
+| 5   | `conversation_completion` | Dialogue with one missing turn               | Choose the most appropriate reply for the missing speaker                                                     | B1–C1      |
+| 6   | `text_completion`         | Sentence or paragraph with one or two blanks | Choose the word, phrase, or connector pair that best fills the blank(s)                                       | B1–C2      |
+| 7   | `grammar_application`     | One or more sentences                        | Apply a grammar rule: identify which sentence can/cannot be transformed, or choose the correct transformation | B1–C1      |
+| 8   | `sentence_correction`     | Sentence with a bolded portion               | Choose the option that correctly improves the highlighted text                                                | B2–C2      |
+| 9   | `matching`                | A person's description or requirements       | Choose the option that best matches those requirements                                                        | A2–B2      |
+
 
 ---
 
 ## CEFR Guidelines
 
-| Level | Vocabulary | Stem complexity | Distractor difficulty |
-|-------|-----------|-----------------|----------------------|
-| A1 | High-frequency words only | Short, direct factual question from a simple statement | Clearly wrong but plausible at first glance |
-| A2 | Common words | Simple inference or comprehension of explicit detail | Require reading the stem carefully to eliminate |
-| B1 | General vocabulary | Inference, vocabulary, or grammar identification | Contain plausible but incorrect details |
-| B2 | Wider range | Interpretation, nuanced inference, or text completion | Subtle semantic or structural differences from the correct answer |
-| C1 | Sophisticated | Critical evaluation, complex correction, or advanced grammar | Very close paraphrases; require careful analysis to distinguish |
-| C2 | Near-native | Discourse-level analysis or complex argument evaluation | Require full understanding of nuance to eliminate |
+
+| Level | Vocabulary                | Stem complexity                                              | Distractor difficulty                                             |
+| ----- | ------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------- |
+| A1    | High-frequency words only | Short, direct factual question from a simple statement       | Clearly wrong but plausible at first glance                       |
+| A2    | Common words              | Simple inference or comprehension of explicit detail         | Require reading the stem carefully to eliminate                   |
+| B1    | General vocabulary        | Inference, vocabulary, or grammar identification             | Contain plausible but incorrect details                           |
+| B2    | Wider range               | Interpretation, nuanced inference, or text completion        | Subtle semantic or structural differences from the correct answer |
+| C1    | Sophisticated             | Critical evaluation, complex correction, or advanced grammar | Very close paraphrases; require careful analysis to distinguish   |
+| C2    | Near-native               | Discourse-level analysis or complex argument evaluation      | Require full understanding of nuance to eliminate                 |
+
 
 ---
 
 ## Formatting Rules (mandatory)
+
 1. **Case rule**: If the stem ends with a blank (`____________`), options start with **lowercase**. If the stem is a complete question, options start with **uppercase**.
 2. **Comma spacing**: Correct — "cats, dogs, and birds". Incorrect — "cats,dogs,and birds".
-3. **Punctuation**: If options complete a sentence stem, they must end with a **period**. If options are standalone answers (e.g., a word or short phrase), no period.
+3. **Punctuation**: If the blank is **at the end** of the stem (no text follows `____________` except a period), options must end with a **period** — they supply the sentence's final word(s). If the blank is **mid-sentence** (word characters follow the blank before the closing period), options must **not** end with a period — the blank fills an interior slot and the sentence continues after it. If options are standalone answers with no blank (e.g., a word or short phrase answering a direct question), no period.
 4. **Bold tags**: Use `<b>term</b>` inside `stem` only for: (a) a key vocabulary word being tested, (b) the bolded portion in `sentence_correction`, or (c) passage labels (e.g., `<b>TEXT</b>:`). Never bold options.
 5. **Explanation length**: At least 2 full lines OR ≥ 100 characters. State why the correct answer is right first, then address each wrong option individually with a specific reason.
 6. **Distractors**: Each distractor must be plausible (a learner who didn't read carefully might choose it) but unambiguously wrong once the stem is fully understood.
@@ -83,12 +90,14 @@ Produce a **JSON object** with exactly these keys:
 ## Question Generation Rules
 
 ### Language & Clarity
+
 1. Every question must be self-contained — the learner must be able to answer without any prior context or external knowledge.
 2. Use neutral, formal English throughout. No slang, idioms specific to one region, or culturally biased content.
 3. One and only one correct answer. Before finalising options, defend each distractor as clearly wrong.
 4. Tense and grammar in `instruction`, `stem`, `options`, and `explanation` must all be consistent.
 
 ### By Question Type
+
 - **sentence_inference**: The inference must be clearly supported by the sentence's content — not speculation. The correct option must be the most logical conclusion from the stated action or situation.
 - **factual_comprehension**: The correct option must be a restatement (not just a copy) of a fact in the source sentence. Distractors introduce plausible but false details (wrong time, wrong place, cancelled event).
 - **vocabulary_in_context**: Bold the word being tested in `stem`. The correct option must match the word's meaning as used in that specific sentence, not its most common or dictionary-primary meaning if different in context.
@@ -104,36 +113,44 @@ Produce a **JSON object** with exactly these keys:
 ## Error Prevention
 
 ## 1. Answer–Explanation Mismatch (CRITICAL)
+
 **Definition**: The `explanation` discusses a different question, passage, people, or scenario than what the `stem` contains — typically caused by copy-pasting an explanation from another item.
 **Severity**: Fatal — the explanation is actively misleading.
 
-| Stem is about | Wrong explanation refers to |
-|--------------|----------------------------|
-| "The committee's decision was unanimous..." | "Olivia feeling settled and happy in the village" |
+
+| Stem is about                                   | Wrong explanation refers to                           |
+| ----------------------------------------------- | ----------------------------------------------------- |
+| "The committee's decision was unanimous..."     | "Olivia feeling settled and happy in the village"     |
 | "Where does Maria go with her dog on weekends?" | "She feels settled and happy" (from a different item) |
+
 
 **Prevention**: After writing the explanation, re-read the first sentence of `stem`. Every proper noun, scenario, and topic in the explanation must match exactly. A mismatch means an explanation was pasted from a different item — replace it entirely.
 
 ---
 
 ## 2. Incorrect Answer Key (CRITICAL)
+
 **Definition**: The `answer` field does not match the logically or grammatically correct option, or it contradicts the `explanation`.
 **Severity**: Fatal — makes the item unusable.
 
-| Stem or explanation supports | Wrong answer key |
-|-----------------------------|-----------------|
+
+| Stem or explanation supports                                                                 | Wrong answer key                            |
+| -------------------------------------------------------------------------------------------- | ------------------------------------------- |
 | Ethan wants to meet people and practise English informally; "Conversation Café" clearly fits | "Film Club – Watch classic movies together" |
-| Explanation confirms Maria goes to the park with her dog | "Film Club – Watch classic movies together" |
+| Explanation confirms Maria goes to the park with her dog                                     | "Film Club – Watch classic movies together" |
+
 
 **Prevention**: After setting `answer`, verify (a) it appears verbatim in `options`, (b) the `explanation` says it is correct, and (c) no other option can be equally defended.
 
 ---
 
 ## 3. Multiple Acceptable Answers
+
 **Definition**: Two or more options are both grammatically correct or logically valid, but only one is marked as `answer`.
 **Severity**: High — the item is ambiguous; any learner who chose the unmarked correct option would be unfairly penalised.
 
 Common cases:
+
 - Both active-voice and passive-voice rewrites are correct: "was damaged" and "got damaged" are both natural
 - Two passive transformations preserve meaning equally: "The receipt was issued to the student after the fee was collected." and "After the fee was collected, the receipt was issued to the student." are both valid
 - Two conversation responses are both grammatically natural and contextually appropriate
@@ -143,10 +160,12 @@ Common cases:
 ---
 
 ## 4. Grammar Error in Explanation
+
 **Definition**: The `explanation` contains a grammatical error (subject-verb agreement, article usage, tense, etc.).
 **Severity**: Medium — the explanation is the benchmark justification; errors undermine its credibility.
 
 Common traps:
+
 - *"so they fits correctly"* (not *"they fit correctly"*)
 - *"it sound slightly formal"* (not *"it sounds slightly formal"*)
 - *"this answer are correct"* (not *"this answer is correct"*)
@@ -156,28 +175,34 @@ Common traps:
 ---
 
 ## 5. Instruction Error (Grammar, Spelling, or Verb Form)
+
 **Definition**: The `instruction` field contains a grammatical error, misspelling, or wrong verb form that makes it unclear or incorrect.
 **Severity**: Medium — a flawed instruction undermines the item's authority and may confuse the learner.
 
-| Incorrect | Correct |
-|-----------|---------|
-| "Read the test and choose…" | "Read the **text** and choose…" |
-| "Read the text when decide which programme…" | "Read the text and decide which programme…" |
-| "chose the correct option" | "**Choose** the correct option" (`instruction` must use the base/imperative form) |
-| "programe" | "**programme**" |
+
+| Incorrect                                    | Correct                                                                           |
+| -------------------------------------------- | --------------------------------------------------------------------------------- |
+| "Read the test and choose…"                  | "Read the **text** and choose…"                                                   |
+| "Read the text when decide which programme…" | "Read the text and decide which programme…"                                       |
+| "chose the correct option"                   | "**Choose** the correct option" (`instruction` must use the base/imperative form) |
+| "programe"                                   | "**programme**"                                                                   |
+
 
 **Prevention**: Re-read `instruction` specifically for (a) correct imperative verb form (base form, not past tense), (b) spelling, and (c) grammatical completeness. The instruction must be a complete, natural sentence.
 
 ---
 
 ## 6. Poor Item Construction — Unnatural Explanation Phrasing
+
 **Definition**: The `explanation` contains incomplete, unnatural, or logically incoherent sentences that fail to justify the answer clearly.
 **Severity**: Medium — a confusing explanation defeats the item's learning purpose.
 
-| Incorrect | Correct |
-|-----------|---------|
-| "lunch happened later reaching the top" | "lunch happened **after** reaching the top" |
+
+| Incorrect                                     | Correct                                            |
+| --------------------------------------------- | -------------------------------------------------- |
+| "lunch happened later reaching the top"       | "lunch happened **after** reaching the top"        |
 | "it may sound slightly formal **than** usual" | "it may sound slightly **more** formal than usual" |
+
 
 **Prevention**: After drafting the explanation, read each sentence aloud. If a sentence sounds incomplete or unnatural, rewrite it as a full, clear English sentence before outputting.
 
@@ -199,6 +224,7 @@ Common traps:
 ## Few-Shot Examples
 
 ### Example 1 — sentence_inference (B1)
+
 ```json
 {
   "instruction": "Read the sentence carefully and answer the question.",
@@ -217,6 +243,7 @@ Common traps:
 ```
 
 ### Example 2 — factual_comprehension (A2)
+
 ```json
 {
   "instruction": "Read the sentence carefully and choose the correct statement.",
@@ -235,6 +262,7 @@ Common traps:
 ```
 
 ### Example 3 — vocabulary_in_context (B1)
+
 ```json
 {
   "instruction": "Read the sentence carefully and choose the meaning of the highlighted word.",
@@ -253,6 +281,7 @@ Common traps:
 ```
 
 ### Example 4 — conversation_completion (B2)
+
 ```json
 {
   "instruction": "Choose the most appropriate option to complete the conversation.",
@@ -271,10 +300,11 @@ Common traps:
 ```
 
 ### Example 5 — grammar_application (B2)
+
 ```json
 {
   "instruction": "Some sentences cannot be converted to a natural passive voice. Choose the one sentence that can be converted into a natural passive voice.",
-  "stem": "Which of the following sentences can be changed into a natural <b>passive voice</b> sentence?",
+  "stem": "Sentences:",
   "options": [
     "He slept for two hours in the afternoon.",
     "He exists only in my memories.",
@@ -289,6 +319,7 @@ Common traps:
 ```
 
 ### Example 6 — text_completion (B2)
+
 ```json
 {
   "instruction": "Read the text and choose the correct pair of options to complete the paragraph.",
@@ -307,6 +338,7 @@ Common traps:
 ```
 
 ### Example 7 — passage_comprehension (A2)
+
 ```json
 {
   "instruction": "Read the short passage and choose the correct answer.",
@@ -324,6 +356,7 @@ Common traps:
 ```
 
 ### Example 8 — sentence_correction (C1)
+
 ```json
 {
   "instruction": "The highlighted part of the sentence contains an error. Choose the option that correctly replaces it.",
@@ -342,6 +375,7 @@ Common traps:
 ```
 
 ### Example 9 — matching (B1)
+
 ```json
 {
   "instruction": "Read the text and choose the event that best matches the person's needs.",
@@ -358,3 +392,4 @@ Common traps:
   "subtopic": "Matching — event selection"
 }
 ```
+
