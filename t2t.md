@@ -12,7 +12,7 @@ description: >
   or any task where a learner reads text and writes their answer — even if the user doesn't
   say "T2T" explicitly. This skill is for written-response tasks only; for spoken response
   use the T2M skill, and for audio-input tasks use A2T.
-
+---
 # T2T — Text-to-Text English Assessment Question Generator
 
 ## Output Format
